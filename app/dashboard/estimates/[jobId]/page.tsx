@@ -269,9 +269,9 @@ export default function EstimateBuilderPage({ params }: { params: { jobId: strin
                   discountValue > 0 ? ["Discount", `- ${fmtC(T.discountAmt)}`] : null,
                   discountValue > 0 ? ["After discount", fmtC(T.afterDiscount)] : null,
                   [`VAT (${Math.round(taxRate * 100)}%)`, fmtC(T.tax)],
-               ].filter((x): x is [string, string] => Array.isArray(x)).map(([l, v]) => (
-                  </div>
-                ))}
+               ].filter((x: any) => Boolean(x)).map((x: any) => { const [l, v] = x; return (
+                  </div>)})
+                  
                 <div className="flex justify-between border-t border-ink-ghost pt-2 text-base font-semibold">
                   <span>Total</span><span className="text-brand-600">{fmtC(T.total)}</span>
                 </div>
