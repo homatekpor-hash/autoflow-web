@@ -269,7 +269,7 @@ export default function EstimateBuilderPage({ params }: { params: { jobId: strin
                   discountValue > 0 ? ["Discount", `- ${fmtC(T.discountAmt)}`] : null,
                   discountValue > 0 ? ["After discount", fmtC(T.afterDiscount)] : null,
                   [`VAT (${Math.round(taxRate * 100)}%)`, fmtC(T.tax)],
-                ].filter(Boolean).map(([l, v]) => (
+                ].filter((item): item is [string, string] => Boolean(item)).map(([l, v]) => => (
                   <div key={String(l)} className="flex justify-between text-sm">
                     <span className="text-ink-faint">{l}</span><span>{v}</span>
                   </div>
