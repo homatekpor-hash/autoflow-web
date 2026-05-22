@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  input, select, textarea, button {
+    font-family: inherit;
+    font-feature-settings: inherit;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
+  /* Focus ring */
+  :focus-visible { outline: 2px solid #f97316; outline-offset: 2px; }
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-lg border border-ink-ghost bg-white px-3 py-2 text-sm text-ink placeholder-ink-faint
+           transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-100;
+    font-feature-settings: "cv02", "cv03", "cv04";
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink-faint;
+  }
+
+  .card {
+    @apply rounded-2xl border border-ink-ghost bg-white shadow-sm;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition;
+  }
+
+  .btn-primary {
+    @apply bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700;
+  }
+
+  .btn-secondary {
+    @apply border border-ink-ghost bg-white text-ink-subtle hover:bg-ink-paper hover:text-ink;
+  }
+
+  /* Page entrance animation */
+  .fade-up {
+    animation: fadeUp 0.18s ease-out both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Number/metric display */
+  .metric-value {
+    @apply text-2xl font-semibold tracking-tight text-ink;
+    font-feature-settings: "tnum";
+  }
+
+  /* Monospace for refs and codes */
+  .mono {
+    font-family: "SF Mono", "Fira Code", "JetBrains Mono", ui-monospace, monospace;
+    font-feature-settings: "liga" 0;
+    letter-spacing: 0;
+  }
+
+  /* Status badges */
+  .badge {
+    @apply inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium;
+  }
+
+  /* Table rows */
+  .table-row {
+    @apply border-t border-ink-ghost px-4 py-3 hover:bg-ink-paper transition-colors;
+  }
+
+  /* Section header */
+  .section-label {
+    @apply text-[10px] font-bold uppercase tracking-widest text-ink-faint;
+  }
+}
+
+/* Kanban column scroll */
+.kanban-col { min-height: 60px; }
+
+/* Number tabular figures */
+.tabular {
+  font-feature-settings: "tnum";
+}

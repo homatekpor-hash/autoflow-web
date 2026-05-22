@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoFlow Ghana — Streamline Your Garage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #f97316;
+      --orange-dark: #ea6c0a;
+      --blue: #1d4ed8;
+      --dark: #0a0a0a;
+      --dark-2: #111111;
+      --dark-3: #1a1a1a;
+      --border: rgba(255,255,255,0.08);
+      --text: #f5f5f5;
+      --muted: #888;
+      --card-bg: rgba(255,255,255,0.03);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, nav .brand {
+      font-family: 'Syne', sans-serif;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-size: 22px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand img { height: 36px; object-fit: contain; }
+    nav ul { display: flex; gap: 36px; list-style: none; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+    nav a:hover { color: var(--text); }
+    .nav-cta { background: var(--orange); color: white !important; padding: 10px 24px; border-radius: 8px; font-weight: 600 !important; transition: background .2s !important; }
+    .nav-cta:hover { background: var(--orange-dark) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(249,115,22,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(29,78,216,0.08) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, black 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.3);
+      color: var(--orange); padding: 6px 16px; border-radius: 99px;
+      font-size: 13px; font-weight: 500; margin-bottom: 28px;
+      position: relative; z-index: 1;
+      animation: fadeUp .6s ease both;
+    }
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 84px);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -0.03em;
+      position: relative; z-index: 1;
+      animation: fadeUp .6s .1s ease both;
+    }
+    .hero h1 span { color: var(--orange); }
+    .hero p {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted); max-width: 560px; line-height: 1.7;
+      margin: 24px auto 40px;
+      position: relative; z-index: 1;
+      animation: fadeUp .6s .2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 1;
+      animation: fadeUp .6s .3s ease both;
+    }
+    .btn-primary {
+      background: var(--orange); color: white;
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+      text-decoration: none; transition: all .2s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(249,115,22,0.3); }
+    .btn-secondary {
+      background: transparent; color: var(--text);
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 16px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+      text-decoration: none; transition: all .2s;
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--dark-2);
+    }
+    .stat {
+      flex: 1; min-width: 180px; text-align: center;
+      padding: 40px 32px;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; color: var(--orange); }
+    .stat-label { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+    /* ── SECTION ── */
+    section { padding: 100px 60px; max-width: 1200px; margin: 0 auto; }
+    .section-tag { font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 16px; }
+    .section-title { font-size: clamp(32px, 4vw, 52px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+    .section-title span { color: var(--orange); }
+    .section-sub { font-size: 18px; color: var(--muted); margin-top: 16px; line-height: 1.7; max-width: 520px; }
+
+    /* ── FEATURES GRID ── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; margin-top: 60px;
+    }
+    .feature-card {
+      background: var(--dark-2); padding: 40px 36px;
+      transition: background .2s;
+    }
+    .feature-card:hover { background: var(--dark-3); }
+    .feature-icon { font-size: 32px; margin-bottom: 20px; }
+    .feature-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+    .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    /* ── HOW IT WORKS ── */
+    .how-wrapper {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center; margin-top: 60px;
+    }
+    .steps { display: flex; flex-direction: column; gap: 32px; }
+    .step { display: flex; gap: 20px; align-items: flex-start; }
+    .step-num {
+      width: 44px; height: 44px; flex-shrink: 0;
+      border-radius: 12px; background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--orange);
+    }
+    .step h4 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    .step p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .how-visual {
+      background: var(--dark-3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px; aspect-ratio: 4/3;
+      display: flex; flex-direction: column; gap: 12px; justify-content: center;
+    }
+    .mock-row {
+      background: rgba(255,255,255,0.04); border-radius: 10px;
+      padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+      border: 1px solid var(--border);
+    }
+    .mock-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .mock-text { flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; }
+    .mock-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; }
+
+    /* ── WHO IS IT FOR ── */
+    .roles-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 60px;
+    }
+    .role-card {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      transition: border-color .2s, transform .2s;
+    }
+    .role-card:hover { border-color: rgba(249,115,22,0.3); transform: translateY(-3px); }
+    .role-icon { font-size: 28px; margin-bottom: 14px; }
+    .role-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .role-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .role-card li { font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: flex-start; }
+    .role-card li::before { content: "→"; color: var(--orange); flex-shrink: 0; }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px;
+    }
+    .pricing-card {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 40px 36px; position: relative;
+      transition: transform .2s;
+    }
+    .pricing-card:hover { transform: translateY(-4px); }
+    .pricing-card.popular {
+      border-color: var(--orange); background: rgba(249,115,22,0.05);
+    }
+    .popular-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--orange); color: white;
+      font-size: 12px; font-weight: 700; padding: 4px 16px; border-radius: 99px;
+      font-family: 'Syne', sans-serif;
+    }
+    .plan-name { font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+    .plan-price { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; margin: 16px 0 4px; }
+    .plan-price span { font-size: 18px; font-weight: 400; color: var(--muted); }
+    .plan-desc { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .plan-features li { font-size: 14px; display: flex; align-items: center; gap: 10px; }
+    .plan-features li::before { content: "✓"; color: var(--orange); font-weight: 700; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px;
+    }
+    .testimonial {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+    }
+    .stars { color: #fbbf24; font-size: 16px; margin-bottom: 16px; letter-spacing: 2px; }
+    .testimonial p { font-size: 15px; line-height: 1.7; color: #ccc; font-style: italic; margin-bottom: 20px; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; background: rgba(249,115,22,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; color: var(--orange); }
+    .author-name { font-weight: 600; font-size: 14px; }
+    .author-role { font-size: 12px; color: var(--muted); }
+
+    /* ── CTA ── */
+    .cta-section {
+      margin: 0 60px 100px;
+      background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(29,78,216,0.1));
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 24px; padding: 80px 60px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(249,115,22,0.1), transparent);
+    }
+    .cta-section h2 { font-size: clamp(32px, 4vw, 52px); font-weight: 800; position: relative; z-index: 1; }
+    .cta-section p { color: var(--muted); font-size: 18px; margin: 16px 0 40px; position: relative; z-index: 1; }
+    .cta-section .btn-primary { position: relative; z-index: 1; font-size: 18px; padding: 16px 48px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--dark-2);
+      padding: 60px;
+    }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; max-width: 1200px; margin: 0 auto 60px; }
+    .footer-brand p { color: var(--muted); font-size: 14px; line-height: 1.7; margin-top: 16px; max-width: 280px; }
+    .footer-col h5 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 20px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { color: var(--muted); font-size: 14px; text-decoration: none; transition: color .2s; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid var(--border); }
+    .footer-bottom p { font-size: 13px; color: var(--muted); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      nav ul { display: none; }
+      section { padding: 60px 24px; }
+      .features-grid, .pricing-grid, .testimonials-grid { grid-template-columns: 1fr; }
+      .roles-grid { grid-template-columns: 1fr 1fr; }
+      .how-wrapper { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .cta-section { margin: 0 24px 60px; padding: 60px 32px; }
+      .stats { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="brand">
+    <img src="/autoflow-logo.jpg" alt="AutoFlow Ghana" />
+  </a>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="/login" class="nav-cta">Sign in →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-badge">🇬🇭 Built for Ghana's automotive industry</div>
+
+  <h1>Run your workshop<br/><span>smarter, faster</span><br/>and fully connected.</h1>
+
+  <p>AutoFlow Ghana is the all-in-one platform that helps mechanical workshops manage jobs, track inventory, pay technicians, and delight customers — all from one dashboard.</p>
+
+  <div class="hero-actions">
+    <a href="/login" class="btn-primary">Get started free →</a>
+    <a href="#features" class="btn-secondary">See all features</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">3+</div><div class="stat-label">Workshops onboarded</div></div>
+  <div class="stat"><div class="stat-num">8</div><div class="stat-label">Role levels</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Works offline</div></div>
+  <div class="stat"><div class="stat-num">GHS</div><div class="stat-label">Ghana cedi native billing</div></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-tag">Everything you need</div>
+  <h2 class="section-title">One platform.<br/><span>Every workflow.</span></h2>
+  <p class="section-sub">From the moment a vehicle arrives to the moment the customer drives away — AutoFlow handles it all.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Vehicle Intake</h3>
+      <p>8-step digital intake form. Capture damage diagrams, fuel level, accessories, and customer signature. QR code self check-in for customers.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Job & WIP Management</h3>
+      <p>Full 8-stage pipeline from Received to Delivered. Kanban board, floor map, technician assignment, and escalation alerts for delayed jobs.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Estimates & Invoices</h3>
+      <p>Build estimates with labour and parts. Send for customer approval via WhatsApp, SMS, or email. Auto-generate PDF invoices with Ghana VAT.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <h3>Parts Inventory</h3>
+      <p>Real-time stock tracking, low stock alerts, supplier management, and purchase orders. Auto-reorder suggestions based on usage patterns.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">👷</div>
+      <h3>Workforce Management</h3>
+      <p>Technician profiles, shift scheduling, attendance tracking, commission calculations, and a gamified performance leaderboard.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⭐</div>
+      <h3>Customer Experience</h3>
+      <p>Before/after repair photos, digital service booklet, NPS feedback surveys, and a referral rewards program to grow your business.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <h3>Reports & Analytics</h3>
+      <p>Revenue, job completion, technician productivity, and bay utilisation — all in real-time dashboards built for Ghana's workshop owners.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📶</div>
+      <h3>Works Offline</h3>
+      <p>Critical for Ghana's network conditions. All data saved locally when offline, syncs automatically when connection returns. No lost work.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <h3>Role-Based Access</h3>
+      <p>8-level hierarchy from Super Admin to Customer. Every staff member sees only what's relevant to their role. Full audit trail.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="background: var(--dark-2); max-width: 100%; padding: 100px 0;">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 60px;">
+    <div class="section-tag">Simple process</div>
+    <h2 class="section-title">How <span>AutoFlow</span> works</h2>
+
+    <div class="how-wrapper">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h4>Customer arrives or books</h4>
+            <p>Walk-in or QR code self check-in. Service advisor captures vehicle details, complaint, and damage photos in the digital intake form.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h4>Diagnose & estimate</h4>
+            <p>Technician diagnoses the issue and creates a detailed estimate with parts and labour. Customer approves via WhatsApp link.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h4>Repair & track in real-time</h4>
+            <p>Job moves through the pipeline. Technician clocks in/out. Manager sees live floor status. Customer gets automatic status updates.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <h4>Complete & delight</h4>
+            <p>Before/after photos sent to customer. Invoice generated. Cashier processes payment. Customer receives digital service booklet.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-visual">
+        <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px; font-weight: 600;">LIVE JOB BOARD</div>
+        <div class="mock-row">
+          <div class="mock-dot" style="background: #22c55e;"></div>
+          <div class="mock-text"></div>
+          <div class="mock-badge" style="background: rgba(34,197,94,0.15); color: #22c55e;">IN PROGRESS</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-dot" style="background: #f97316;"></div>
+          <div class="mock-text" style="width: 70%;"></div>
+          <div class="mock-badge" style="background: rgba(249,115,22,0.15); color: #f97316;">WAITING PARTS</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-dot" style="background: #3b82f6;"></div>
+          <div class="mock-text" style="width: 85%;"></div>
+          <div class="mock-badge" style="background: rgba(59,130,246,0.15); color: #3b82f6;">DIAGNOSING</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-dot" style="background: #a855f7;"></div>
+          <div class="mock-text" style="width: 60%;"></div>
+          <div class="mock-badge" style="background: rgba(168,85,247,0.15); color: #a855f7;">QC CHECK</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-dot" style="background: #10b981;"></div>
+          <div class="mock-text"></div>
+          <div class="mock-badge" style="background: rgba(16,185,129,0.15); color: #10b981;">READY ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS IT FOR -->
+<section>
+  <div class="section-tag">Built for everyone</div>
+  <h2 class="section-title">The right tools for<br/><span>every role</span></h2>
+
+  <div class="roles-grid">
+    <div class="role-card">
+      <div class="role-icon">👑</div>
+      <h4>Workshop Owner</h4>
+      <ul>
+        <li>Full dashboard overview</li>
+        <li>Revenue & analytics</li>
+        <li>Staff management</li>
+        <li>Multi-branch view</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-icon">🏭</div>
+      <h4>Branch Manager</h4>
+      <ul>
+        <li>Branch-level reports</li>
+        <li>Job & WIP oversight</li>
+        <li>Team scheduling</li>
+        <li>Inventory control</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-icon">📋</div>
+      <h4>Service Advisor</h4>
+      <ul>
+        <li>Customer intake</li>
+        <li>Estimate creation</li>
+        <li>Job tracking</li>
+        <li>Customer comms</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-icon">🔧</div>
+      <h4>Technician</h4>
+      <ul>
+        <li>View assigned jobs</li>
+        <li>Clock in/out</li>
+        <li>Add job notes</li>
+        <li>Update job status</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background: var(--dark-2); max-width: 100%; padding: 100px 0;">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 60px;">
+    <div class="section-tag">Simple pricing</div>
+    <h2 class="section-title">Plans that grow<br/><span>with your business</span></h2>
+    <p class="section-sub">No setup fees. No hidden charges. Pay monthly in Ghana cedis.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">GHS 299<span>/mo</span></div>
+        <div class="plan-desc">Perfect for a single workshop just getting started.</div>
+        <ul class="plan-features">
+          <li>Up to 5 staff accounts</li>
+          <li>Job & WIP management</li>
+          <li>Customer intake & estimates</li>
+          <li>Basic inventory</li>
+          <li>Customer QR check-in</li>
+          <li>WhatsApp notifications</li>
+        </ul>
+        <a href="/login" class="btn-secondary" style="display: block; text-align: center; padding: 14px;">Get started</a>
+      </div>
+
+      <div class="pricing-card popular">
+        <div class="popular-badge">MOST POPULAR</div>
+        <div class="plan-name">Professional</div>
+        <div class="plan-price">GHS 599<span>/mo</span></div>
+        <div class="plan-desc">For growing workshops that need the full suite.</div>
+        <ul class="plan-features">
+          <li>Up to 20 staff accounts</li>
+          <li>Everything in Starter</li>
+          <li>Full inventory & suppliers</li>
+          <li>Workforce & commissions</li>
+          <li>Customer experience suite</li>
+          <li>Reports & analytics</li>
+          <li>Offline-first mode</li>
+        </ul>
+        <a href="/login" class="btn-primary" style="display: block; text-align: center; padding: 14px;">Get started</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">Custom</div>
+        <div class="plan-desc">For workshop chains with multiple branches and owners.</div>
+        <ul class="plan-features">
+          <li>Unlimited staff accounts</li>
+          <li>Multi-branch management</li>
+          <li>Dedicated Super Admin</li>
+          <li>Custom branding</li>
+          <li>Priority support</li>
+          <li>Custom integrations</li>
+          <li>On-site training</li>
+        </ul>
+        <a href="mailto:hello@autoflow.gh" class="btn-secondary" style="display: block; text-align: center; padding: 14px;">Contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="about">
+  <div class="section-tag">Trusted by workshops</div>
+  <h2 class="section-title">What our customers<br/><span>are saying</span></h2>
+
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p>"Before AutoFlow, we were using paper job cards and losing track of vehicles. Now we can see every job in real-time and customers love the WhatsApp updates."</p>
+      <div class="testimonial-author">
+        <div class="avatar">KO</div>
+        <div>
+          <div class="author-name">Kofi Osei</div>
+          <div class="author-role">Owner, Auto Ghana Limited</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p>"The offline mode is a game changer. We're in an area with poor network and AutoFlow keeps working no matter what. Nothing gets lost when the internet drops."</p>
+      <div class="testimonial-author">
+        <div class="avatar">AB</div>
+        <div>
+          <div class="author-name">Ama Boateng</div>
+          <div class="author-role">Manager, Home Base Workshop</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p>"Our technicians love seeing their leaderboard scores. It's improved productivity by 30% and the commission tracking means everyone knows exactly what they've earned."</p>
+      <div class="testimonial-author">
+        <div class="avatar">EK</div>
+        <div>
+          <div class="author-name">Eric Kwarteng</div>
+          <div class="author-role">Owner, ERICO AUTO MECHANICALS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Ready to streamline<br/>your garage?</h2>
+  <p>Join workshops across Ghana already running smarter with AutoFlow.</p>
+  <a href="/login" class="btn-primary">Start for free today →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="/autoflow-logo.jpg" alt="AutoFlow Ghana" style="height: 40px; object-fit: contain;" />
+      <p>The complete workshop management platform built for Ghana's automotive industry. Streamline every job from intake to delivery.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Product</h5>
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="/login">Sign in</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Roles</h5>
+      <ul>
+        <li><a href="#">Workshop Owners</a></li>
+        <li><a href="#">Branch Managers</a></li>
+        <li><a href="#">Technicians</a></li>
+        <li><a href="#">Service Advisors</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy policy</a></li>
+        <li><a href="#">Terms of service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 AutoFlow Ghana. All rights reserved.</p>
+    <p style="color: var(--muted);">Made with ❤️ for Ghana's workshops</p>
+  </div>
+</footer>
+
+</body>
+</html>
