@@ -2,32 +2,20 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Card, PageHeader, Spinner } from "@/components/ui";
-
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-
-function authFetch(url: string, opts: RequestInit = {}) {
-  const token = localStorage.getItem("sl_token");
-  return fetch(url, { ...opts, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...(opts.headers || {}) } });
-}
-
+const tok = () => localStorage.getItem("sl_token");
 export default function WorkshopsPage() {
   const { user } = useAuth();
   const [workshops, setWorkshops] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState<any>(null);
-
-  async function load() {
-    const res = await authFetch(`${API}/api/workshops`);
-    if (res.ok) setWorkshops(await res.json());
-    setLoading(false);
-  }
-
-  useEffect(() => { load(); }, []);
-
-  const getBase = () => typeof window !== "undefined" ? window.location.origin : "https://autoflow-web-vq1f.vercel.app";
-  const getQRUrl = (ws: any) => `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`${getBase()}/checkin/${ws.qrToken}`)}`;
-  const getLink = (ws: any) => `${getBase()}/checkin/${ws.qrToken}`;
-
+  useEffect(() => {
+    fetch(`${API}/api/workshops`, { headers: { Authorization: `Bearer ${tok()}` } })
+      .then(r => r.json()).then(d => { setWorkshops(Array.isArray(d) ? d : []); setLoading(false); });
+  }, []);
+  const base = typeof window !== "undefined" ? window.location.origin : "https://autoflow-web-five.vercel.app";
+  const qrUrl = (ws: any) => `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`${base}/checkin/${ws.qrToken}`)}`;
+  const link = (ws: any) => `${base}/checkin/${ws.qrToken}`;
   return (
     <div className="fade-up">
       <PageHeader title="Workshops" subtitle={`${workshops.length} workshops`} />
@@ -56,15 +44,15 @@ export default function WorkshopsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowQR(null)}>
           <div className="w-full max-w-sm rounded-2xl bg-white shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between border-b border-ink-ghost px-6 py-4">
-              <h2 className="font-semibold text-ink">QR Check-in — {showQR.name}</h2>
+              <h2 className="font-semibold text-ink">{showQR.name} — QR</h2>
               <button onClick={() => setShowQR(null)} className="text-2xl text-ink-faint">x</button>
             </div>
             <div className="p-6 text-center">
-              <img src={getQRUrl(showQR)} alt="QR" className="w-52 h-52 mx-auto rounded-xl border mb-4" />
-              <p className="text-xs font-mono text-ink-subtle break-all mb-4">{getLink(showQR)}</p>
+              <img src={qrUrl(showQR)} alt="QR" className="w-52 h-52 mx-auto rounded-xl border mb-4" />
+              <p className="text-xs font-mono text-ink-subtle break-all mb-4">{link(showQR)}</p>
               <div className="flex gap-2">
-                <a href={getQRUrl(showQR)} download target="_blank" rel="noreferrer" className="flex-1 rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white text-center">Download</a>
-                <a href={getLink(showQR)} target="_blank" rel="noreferrer" className="flex-1 rounded-xl border border-ink-ghost py-2.5 text-sm text-ink-subtle text-center">Open</a>
+                <a href={qrUrl(showQR)} download target="_blank" rel="noreferrer" className="flex-1 rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white text-center">Download</a>
+                <a href={link(showQR)} target="_blank" rel="noreferrer" className="flex-1 rounded-xl border border-ink-ghost py-2.5 text-sm text-ink-subtle text-center">Open</a>
               </div>
             </div>
           </div>
