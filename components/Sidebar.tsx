@@ -32,6 +32,7 @@ const ROLE_NAV: Record<string, { group: string|null; href: string; label: string
     { group:"Manage",    href:"/dashboard/workshops",     label:"Workshops",    icon:"🏭" },
     { group:"Manage",    href:"/dashboard/team",          label:"Team",         icon:"👥" },
     { group:"Manage",    href:"/dashboard/cx",            label:"Customer XP",  icon:"⭐" },
+    { group:"Manage",    href:"/dashboard/billing",        label:"Billing",      icon:"💳" },
   ],
   BRANCH_MANAGER: [
     { group:null,        href:"/dashboard",              label:"Overview",     icon:"📊" },
