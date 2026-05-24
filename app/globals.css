@@ -108,3 +108,9 @@
 .tabular {
   font-feature-settings: "tnum";
 }
+
+@media print {
+  .sidebar, nav, .print\:hidden { display: none !important; }
+  body { background: white !important; color: black !important; }
+  .print\:shadow-none { box-shadow: none !important; }
+}
