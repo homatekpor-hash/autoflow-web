@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import Sidebar from "@/components/Sidebar";
 import OfflineBar from "@/components/OfflineBar";
 import { Spinner } from "@/components/ui";
