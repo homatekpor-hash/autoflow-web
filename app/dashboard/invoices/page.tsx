@@ -28,8 +28,8 @@ export default function InvoicesPage() {
     if (res.ok) { setPaying(null); load(); }
   }
 
-  const total    = invoices.reduce((s,i)=>s+(i.status==="PAID"?Number(i.total):0),0);
-  const unpaid   = invoices.reduce((s,i)=>s+(i.status==="UNPAID"?Number(i.total):0),0);
+  const total    = invoices.reduce((s,i)=>s+(i.status==="PAID"?Number(i.total)||0:0),0);
+  const unpaid   = invoices.reduce((s,i)=>s+(i.status==="PENDING"||i.status==="UNPAID"?Number(i.total)||0:0),0);
 
   return (
     <div className="fade-up">
