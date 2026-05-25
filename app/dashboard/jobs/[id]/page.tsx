@@ -281,6 +281,70 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
         </div>
       )}
 
+      {/* Photos */}
+      {tab==="photos" && (
+        <div className="space-y-5">
+          {canManage && (
+            <div className="rounded-xl border border-ink-ghost bg-white p-5">
+              <p className="text-sm font-semibold text-ink mb-4">Upload photo</p>
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="label">Type</label>
+                  <select className="input" value={photoType} onChange={e=>setPhotoType(e.target.value)}>
+                    <option value="BEFORE">Before repair</option>
+                    <option value="AFTER">After repair</option>
+                    <option value="DAMAGE">Damage</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label">Caption</label>
+                  <input className="input" value={photoCaption} onChange={e=>setPhotoCaption(e.target.value)} placeholder="Optional" />
+                </div>
+              </div>
+              <label className="block rounded-xl border-2 border-dashed border-orange-200 bg-orange-50 p-5 text-center cursor-pointer hover:bg-orange-100 transition">
+                <span className="text-2xl block mb-2">📁</span>
+                <p className="text-sm font-medium text-orange-600">Click to select photo</p>
+                <input type="file" accept="image/*" onChange={handlePhotoFile} className="hidden" />
+              </label>
+              {photoPreview && (
+                <div className="mt-3">
+                  <img src={photoPreview} alt="Preview" className="w-full max-h-48 object-cover rounded-xl border border-ink-ghost mb-2" />
+                  <button onClick={uploadPhoto} disabled={uploadingPhoto}
+                    className="w-full rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-50">
+                    {uploadingPhoto?"Uploading…":"Upload photo"}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+          {["BEFORE","AFTER","DAMAGE","OTHER"].map(type => {
+            const list = photos.filter((p:any)=>p.type===type);
+            if (!list.length) return null;
+            return (
+              <div key={type}>
+                <p className="text-xs font-bold uppercase tracking-widest text-ink-faint mb-2">{type} ({list.length})</p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {list.map((p:any)=>(
+                    <div key={p.id} className="cursor-pointer" onClick={()=>setSelectedPhoto(p)}>
+                      <img src={p.url} alt={p.caption||""} className="w-full h-32 object-cover rounded-xl border border-ink-ghost hover:opacity-90 transition" />
+                      {p.caption && <p className="text-xs text-ink-faint mt-1 truncate">{p.caption}</p>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+          {photos.length===0 && !canManage && <div className="text-center py-10 text-ink-faint text-sm">No photos yet</div>}
+          {photos.length===0 && canManage && <div className="text-center py-6 text-ink-faint text-sm">No photos yet. Upload one above.</div>}
+          {selectedPhoto && (
+            <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={()=>setSelectedPhoto(null)}>
+              <img src={selectedPhoto.url} alt="" className="max-w-full max-h-full rounded-xl" />
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Estimate */}
       {tab==="estimate" && (
         <div className="space-y-4">
