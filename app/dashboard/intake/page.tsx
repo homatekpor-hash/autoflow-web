@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -597,14 +598,29 @@ function AccessoriesStep({ accessories, setAccessories }: any) {
 }
 
 function PhotosStep({ photos, setPhotos }: any) {
+  const [uploadedPhotos, setUploadedPhotos] = React.useState<{name:string,url:string}[]>([]);
+
   function toggle(pos: string) {
     setPhotos((prev: string[]) => prev.includes(pos) ? prev.filter(p => p !== pos) : [...prev, pos]);
   }
+
+  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files || []);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setUploadedPhotos(prev => [...prev, { name: file.name, url: reader.result as string }]);
+        setPhotos((prev: string[]) => prev.includes(file.name) ? prev : [...prev, file.name]);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   return (
     <Card className="p-5">
       <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">Vehicle photos</p>
-      <p className="mb-4 text-xs text-ink-subtle">Tap each position to mark as captured. Upload from your device below.</p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <p className="mb-4 text-xs text-ink-subtle">Tap each position to mark as captured, then upload photos below.</p>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 mb-4">
         {PHOTO_POSITIONS.map(pos => (
           <button key={pos} onClick={() => toggle(pos)}
             className={clsx("flex flex-col items-center gap-2 rounded-xl border p-4 text-xs font-medium transition",
@@ -616,13 +632,29 @@ function PhotosStep({ photos, setPhotos }: any) {
           </button>
         ))}
       </div>
-      <div className="mt-4 rounded-xl border border-dashed border-ink-ghost p-5 text-center">
-        <span className="text-2xl">📁</span>
-        <p className="mt-2 text-sm font-medium text-ink-subtle">Upload additional photos or video</p>
-        <p className="text-xs text-ink-faint mt-1">JPG, PNG, MP4 — max 50MB each</p>
-        <p className="mt-3 text-xs text-ink-faint">(File upload integration — connect to cloud storage)</p>
-      </div>
-      <p className="mt-3 text-xs text-ink-faint">{photos.length} of {PHOTO_POSITIONS.length} standard positions captured</p>
+
+      <label className="block mt-4 rounded-xl border-2 border-dashed border-orange-200 bg-orange-50 p-5 text-center cursor-pointer hover:bg-orange-100 transition">
+        <span className="text-2xl block mb-2">📁</span>
+        <p className="text-sm font-medium text-orange-600">Click to upload photos</p>
+        <p className="text-xs text-orange-400 mt-1">JPG, PNG — multiple files allowed</p>
+        <input type="file" accept="image/*" multiple onChange={handleFiles} className="hidden" />
+      </label>
+
+      {uploadedPhotos.length > 0 && (
+        <div className="mt-4 grid grid-cols-3 gap-2">
+          {uploadedPhotos.map((p,i) => (
+            <div key={i} className="relative">
+              <img src={p.url} alt={p.name} className="w-full h-20 object-cover rounded-xl border border-ink-ghost" />
+              <button onClick={() => {
+                setUploadedPhotos(prev => prev.filter((_,j)=>j!==i));
+                setPhotos((prev: string[]) => prev.filter(n => n !== p.name));
+              }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">×</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <p className="mt-3 text-xs text-ink-faint">{uploadedPhotos.length} photo{uploadedPhotos.length !== 1 ? "s" : ""} uploaded · {PHOTO_POSITIONS.filter(p=>photos.includes(p)).length} of {PHOTO_POSITIONS.length} positions marked</p>
     </Card>
   );
 }
