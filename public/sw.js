@@ -1,19 +1,16 @@
-const CACHE_NAME = "autoflow-v1";
-const API_CACHE_NAME = "autoflow-api-v1";
-
-self.addEventListener("install", function(event) {
-  self.skipWaiting();
+self.addEventListener('push', function(event) {
+  const data = event.data ? event.data.json() : {};
+  const options = {
+    body: data.body || 'You have a new notification',
+    icon: '/autoflow-logo.jpg',
+    badge: '/autoflow-logo.jpg',
+    vibrate: [100, 50, 100],
+    data: { url: data.url || '/dashboard' },
+  };
+  event.waitUntil(self.registration.showNotification(data.title || 'AutoFlow Ghana', options));
 });
 
-self.addEventListener("activate", function(event) {
-  event.waitUntil(
-    caches.keys().then(function(keys) {
-      return Promise.all(keys.filter(function(k) { return k !== CACHE_NAME && k !== API_CACHE_NAME; }).map(function(k) { return caches.delete(k); }));
-    })
-  );
-  self.clients.claim();
-});
-
-self.addEventListener("fetch", function(event) {
-  if (event.request.method !== "GET") return;
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(clients.openWindow(event.notification.data.url));
 });

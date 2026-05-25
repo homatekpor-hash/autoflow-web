@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import GlobalSearch from "@/components/GlobalSearch";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import Sidebar from "@/components/Sidebar";
 import OfflineBar from "@/components/OfflineBar";
@@ -35,6 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen">
       <Sidebar />
+      <div className="flex items-center justify-end px-6 py-3 border-b border-ink-ghost bg-white"><GlobalSearch /></div>
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-6xl p-6 lg:p-8">
           {children}

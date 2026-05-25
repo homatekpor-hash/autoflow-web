@@ -32,11 +32,18 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
   const [noteText, setNoteText] = useState("");
   const [internal, setInternal] = useState(false);
   const [estItems, setEst]      = useState<any[]>([]);
+  const [photos,      setPhotos]      = useState<any[]>([]);
+  const [photoType,   setPhotoType]   = useState("BEFORE");
+  const [photoCaption,setPhotoCaption]= useState("");
+  const [photoPreview,setPhotoPreview]= useState<string|null>(null);
+  const [uploadingPhoto,setUploadingPhoto]=useState(false);
+  const [selectedPhoto,setSelectedPhoto]=useState<any>(null);
 
   async function load() {
-    const [jobRes, notesRes] = await Promise.all([
+    const [jobRes, notesRes, photosRes] = await Promise.all([
       af(`/api/jobs/${params.id}`),
       af(`/api/jobs/${params.id}/notes`),
+      af(`/api/jobs/${params.id}/photos`),
     ]);
     if (jobRes.ok) {
       const d = await jobRes.json();
@@ -44,6 +51,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
       setEst((d.estimate?.items||[]).map((i:any)=>({...i, unitPrice: i.rate||i.unitPrice||0})));
     }
     if (notesRes.ok) setNotes(await notesRes.json());
+    if (photosRes.ok) setPhotos(await photosRes.json());
     setLoading(false);
   }
 
@@ -127,6 +135,23 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
     w?.document.close(); w?.print();
   }
 
+  function handlePhotoFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setPhotoPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  async function uploadPhoto() {
+    if (!photoPreview) return;
+    setUploadingPhoto(true);
+    await af(`/api/jobs/${params.id}/photos`, { method:"POST", body: JSON.stringify({ url: photoPreview, type: photoType, caption: photoCaption }) });
+    setPhotoPreview(null); setPhotoCaption("");
+    await load();
+    setUploadingPhoto(false);
+  }
+
   const canManage = ["SUPER_ADMIN","OWNER","BRANCH_MANAGER","SERVICE_ADVISOR"].includes(user?.role||"");
   const estTotal = estItems.reduce((s,i)=>s+(i.quantity*(i.unitPrice||i.rate||0)),0);
 
@@ -145,7 +170,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
       </div>
 
       <div className="flex border-b border-ink-ghost mb-6 overflow-x-auto">
-        {["overview","notes","estimate","invoice","history"].map(t=>(
+        {["overview","notes","photos","estimate","invoice","history"].map(t=>(
           <button key={t} onClick={()=>setTab(t)}
             className={clsx("px-4 py-2.5 text-sm font-medium border-b-2 -mb-px capitalize whitespace-nowrap transition",
               tab===t?"border-orange-500 text-orange-600":"border-transparent text-ink-subtle hover:text-ink")}>
