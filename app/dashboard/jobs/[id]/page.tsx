@@ -196,6 +196,20 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             <p className="text-sm text-ink">{job.complaint||"—"}</p>
           </div>
 
+          {job.customerPhone && (
+            <div className="flex gap-3">
+              <a href={`https://wa.me/${job.customerPhone.replace(/\D/g,"").replace(/^0/,"233")}?text=${encodeURIComponent(`Hello ${job.customerName}, this is ${job.workshop?.name}. Regarding your ${job.vehicle?.make} ${job.vehicle?.model} (${job.vehicle?.plate}) - Job ref: ${job.jobRef}`)}`}
+                target="_blank" rel="noreferrer"
+                className="flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-2.5 text-sm font-medium text-green-700 hover:bg-green-100 transition">
+                <span>📱</span> WhatsApp customer
+              </a>
+              <a href={`tel:${job.customerPhone}`}
+                className="flex items-center gap-2 rounded-xl border border-ink-ghost px-4 py-2.5 text-sm font-medium text-ink-subtle hover:bg-ink-paper transition">
+                <span>📞</span> Call
+              </a>
+            </div>
+          )}
+
           {/* Technician assignment */}
           {canManage && (
             <div className="rounded-xl border border-ink-ghost bg-white p-5">
