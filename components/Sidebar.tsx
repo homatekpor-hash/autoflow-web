@@ -19,6 +19,7 @@ const ROLE_NAV: Record<string, { group: string|null; href: string; label: string
     { group:"Manage",    href:"/dashboard/workshops",     label:"Workshops",    icon:"🏭" },
     { group:"Manage",    href:"/dashboard/team",          label:"Team",         icon:"👥" },
     { group:"Manage",    href:"/dashboard/schedule",      label:"Schedule",     icon:"📅" },
+    { group:"Manage",    href:"/dashboard/performance",   label:"Performance",  icon:"🏆" },
     { group:"Manage",    href:"/dashboard/cx",            label:"Customer XP",  icon:"⭐" },
     { group:"Manage",    href:"/dashboard/admin",          label:"Admin Panel",  icon:"🛡️" },
   ],
@@ -33,6 +34,7 @@ const ROLE_NAV: Record<string, { group: string|null; href: string; label: string
     { group:"Manage",    href:"/dashboard/workshops",     label:"Workshops",    icon:"🏭" },
     { group:"Manage",    href:"/dashboard/team",          label:"Team",         icon:"👥" },
     { group:"Manage",    href:"/dashboard/schedule",      label:"Schedule",     icon:"📅" },
+    { group:"Manage",    href:"/dashboard/performance",   label:"Performance",  icon:"🏆" },
     { group:"Manage",    href:"/dashboard/cx",            label:"Customer XP",  icon:"⭐" },
     { group:"Manage",    href:"/dashboard/billing",        label:"Billing",      icon:"💳" },
   ],
@@ -46,6 +48,7 @@ const ROLE_NAV: Record<string, { group: string|null; href: string; label: string
     { group:"Business",  href:"/dashboard/reports",       label:"Reports",      icon:"📈" },
     { group:"Manage",    href:"/dashboard/team",          label:"Team",         icon:"👥" },
     { group:"Manage",    href:"/dashboard/schedule",      label:"Schedule",     icon:"📅" },
+    { group:"Manage",    href:"/dashboard/performance",   label:"Performance",  icon:"🏆" },
     { group:"Manage",    href:"/dashboard/cx",            label:"Customer XP",  icon:"⭐" },
   ],
   SERVICE_ADVISOR: [
